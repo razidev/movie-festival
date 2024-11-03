@@ -12,5 +12,8 @@ func InitRoutes() *gin.Engine {
 	movieGroup := r.Group("/movie")
 	movieRoute(movieGroup, validate)
 
+	userGroup := r.Group("/user")
+	UserRoute(userGroup, validate)
+
 	return r
 }

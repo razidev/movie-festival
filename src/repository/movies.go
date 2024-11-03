@@ -13,6 +13,7 @@ type MovieRepository interface {
 	GetMovieByUniqueId(unique uuid.UUID) (models.Movies, error)
 	UpdateMovie(movie models.Movies) (models.Movies, error)
 	HighestScore(column string) (models.Movies, error)
+	ListMovies(offset int, limit int) ([]models.Movies, error)
 }
 
 type movieRepository struct {
@@ -56,4 +57,13 @@ func (r *movieRepository) HighestScore(column string) (models.Movies, error) {
 	}
 
 	return movie, nil
+}
+
+func (r *movieRepository) ListMovies(offset int, limit int) ([]models.Movies, error) {
+	var movies []models.Movies
+	if err := configs.DB.Offset(offset).Limit(limit).Find(&movies).Error; err != nil {
+		return movies, err
+	}
+
+	return movies, nil
 }
