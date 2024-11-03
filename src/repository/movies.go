@@ -8,6 +8,8 @@ import (
 
 type MovieRepository interface {
 	CreateMovie(movie models.Movies) (models.Movies, error)
+	GetMovieByUniqueId(unique uuid.UUID) (models.Movies, error)
+	UpdateMovie(movie models.Movies) (models.Movies, error)
 }
 
 type movieRepository struct {
@@ -20,6 +22,23 @@ func NewMovieRepository() MovieRepository {
 func (r *movieRepository) CreateMovie(movie models.Movies) (models.Movies, error) {
 	movie.UniqueID = uuid.New()
 	if err := configs.DB.Create(&movie).Error; err != nil {
+		return movie, err
+	}
+
+	return movie, nil
+}
+
+func (r *movieRepository) GetMovieByUniqueId(uniqueId uuid.UUID) (models.Movies, error) {
+	var movie models.Movies
+	if err := configs.DB.Where("unique_id = ?", uniqueId).First(&movie).Error; err != nil {
+		return movie, err
+	}
+
+	return movie, nil
+}
+
+func (r *movieRepository) UpdateMovie(movie models.Movies) (models.Movies, error) {
+	if err := configs.DB.Save(&movie).Error; err != nil {
 		return movie, err
 	}
 

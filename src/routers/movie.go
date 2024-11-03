@@ -14,4 +14,5 @@ func movieRoute(group *gin.RouterGroup, validator *validator.Validate) {
 	movieController := controllers.NewMoviesController(movieService, validator)
 
 	group.POST("/", movieController.PostMovie)
+	group.PUT("/:uniqueId", movieController.PutMovie)
 }

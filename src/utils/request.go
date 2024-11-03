@@ -1,6 +1,6 @@
 package utils
 
-type CreateMovie struct {
+type PayloadMovie struct {
 	Title       string   `json:"title" validate:"required,max=50"`
 	Description string   `json:"description"`
 	Duration    int64    `json:"duration" validate:"required"`

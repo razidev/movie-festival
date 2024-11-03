@@ -10,6 +10,7 @@ import (
 
 type MovieService interface {
 	CreateMovie(movie models.Movies) (models.Movies, error)
+	UpdateMovie(movie models.Movies) (models.Movies, error)
 }
 
 type movieService struct {
@@ -32,4 +33,25 @@ func (s *movieService) CreateMovie(movie models.Movies) (models.Movies, error) {
 	}
 
 	return newMovie, nil
+}
+
+func (s *movieService) UpdateMovie(movie models.Movies) (models.Movies, error) {
+	foundMovie, err := s.movieRepository.GetMovieByUniqueId(movie.UniqueID)
+	if err != nil {
+		return foundMovie, errors.New("Movie not found")
+	}
+
+	foundMovie.Title = movie.Title
+	foundMovie.Description = movie.Description
+	foundMovie.Duration = movie.Duration
+	foundMovie.Artists = movie.Artists
+	foundMovie.GenreIds = movie.GenreIds
+	foundMovie.WatchUrl = movie.WatchUrl
+
+	updateMovie, err := s.movieRepository.UpdateMovie(foundMovie)
+	if err != nil {
+		return updateMovie, errors.New("failed to update movie")
+	}
+
+	return updateMovie, nil
 }
