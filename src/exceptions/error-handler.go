@@ -18,6 +18,8 @@ func ValidationError(err interface{}) map[string]string {
 			errorsMap[fieldName] = fieldName + " must be at most " + err.Param() + " characters"
 		case "email":
 			errorsMap[fieldName] = "Invalid email format"
+		case "http_url":
+			errorsMap[fieldName] = "Movie Url is not valid"
 		}
 	}
 

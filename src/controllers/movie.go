@@ -29,13 +29,13 @@ func NewMoviesController(service services.MovieService, validate *validator.Vali
 func (ctrl *MoviesController) PostMovie(ctx *gin.Context) {
 	var payload utils.PayloadMovie
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid format request"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid format request"})
 		return
 	}
 
 	if err := ctrl.Validate.Struct(payload); err != nil {
 		errorsMap := exception.ValidationError(err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": errorsMap})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": errorsMap})
 		return
 	}
 
@@ -53,24 +53,29 @@ func (ctrl *MoviesController) PostMovie(ctx *gin.Context) {
 
 	newMovie, err := ctrl.Service.CreateMovie(movie)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "Movie created successfully", "movie": newMovie})
+	ctx.JSON(http.StatusCreated, gin.H{
+		"message": "Movie created successfully",
+		"data": gin.H{
+			"movie": utils.MovieResponse(newMovie),
+		},
+	})
 }
 
 func (ctrl *MoviesController) PutMovie(ctx *gin.Context) {
 	uniqueId := ctx.Param("uniqueId")
 	var payload utils.PayloadMovie
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid format request"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid format request"})
 		return
 	}
 
 	if err := ctrl.Validate.Struct(payload); err != nil {
 		errorsMap := exception.ValidationError(err)
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": errorsMap})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": errorsMap})
 		return
 	}
 
@@ -93,5 +98,10 @@ func (ctrl *MoviesController) PutMovie(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Movie updated successfully", "movie": updatedMovie})
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Movie updated successfully",
+		"data": gin.H{
+			"movie": utils.MovieResponse(updatedMovie),
+		},
+	})
 }
