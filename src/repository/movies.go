@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 	"github.com/razidev/movie-festival/src/configs"
 	"github.com/razidev/movie-festival/src/models"
@@ -10,6 +12,7 @@ type MovieRepository interface {
 	CreateMovie(movie models.Movies) (models.Movies, error)
 	GetMovieByUniqueId(unique uuid.UUID) (models.Movies, error)
 	UpdateMovie(movie models.Movies) (models.Movies, error)
+	HighestScore(column string) (models.Movies, error)
 }
 
 type movieRepository struct {
@@ -39,6 +42,16 @@ func (r *movieRepository) GetMovieByUniqueId(uniqueId uuid.UUID) (models.Movies,
 
 func (r *movieRepository) UpdateMovie(movie models.Movies) (models.Movies, error) {
 	if err := configs.DB.Save(&movie).Error; err != nil {
+		return movie, err
+	}
+
+	return movie, nil
+}
+
+func (r *movieRepository) HighestScore(column string) (models.Movies, error) {
+	query := fmt.Sprintf("%s DESC", column)
+	var movie models.Movies
+	if err := configs.DB.Order(query).First(&movie).Error; err != nil {
 		return movie, err
 	}
 

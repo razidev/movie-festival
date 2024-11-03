@@ -14,5 +14,7 @@ func MovieResponse(movie models.Movies) interface{} {
 		"artist":      movie.Artists,
 		"genre_ids":   movie.GenreIds,
 		"watch_url":   movie.WatchUrl,
+		"voters":      movie.Voters,
+		"viewers":     movie.Viewers,
 	}
 }

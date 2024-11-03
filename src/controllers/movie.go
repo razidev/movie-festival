@@ -105,3 +105,18 @@ func (ctrl *MoviesController) PutMovie(ctx *gin.Context) {
 		},
 	})
 }
+
+func (ctrl *MoviesController) GetHighestVotes(ctx *gin.Context) {
+	highestVotesMovie, err := ctrl.Service.FindHighestVotes()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Top 1 highest voted movies",
+		"data": gin.H{
+			"movie": utils.MovieResponse(highestVotesMovie),
+		},
+	})
+}

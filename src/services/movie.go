@@ -10,6 +10,7 @@ import (
 type MovieService interface {
 	CreateMovie(movie models.Movies) (models.Movies, error)
 	UpdateMovie(movie models.Movies) (models.Movies, error)
+	FindHighestVotes() (models.Movies, error)
 }
 
 type movieService struct {
@@ -48,4 +49,13 @@ func (s *movieService) UpdateMovie(movie models.Movies) (models.Movies, error) {
 	}
 
 	return updateMovie, nil
+}
+
+func (s *movieService) FindHighestVotes() (models.Movies, error) {
+	movie, err := s.movieRepository.HighestScore("voters")
+	if err != nil {
+		return movie, errors.New("Highest voter not found")
+	}
+
+	return movie, nil
 }
