@@ -25,6 +25,7 @@ func NewUserController(service services.UserService, validate *validator.Validat
 func (ctrl *UserController) GetMovies(ctx *gin.Context) {
 	page, errPage := strconv.Atoi(ctx.Query("page"))
 	limit, errLimit := strconv.Atoi(ctx.Query("limit"))
+	search := ctx.Query("search")
 	if errPage != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page number"})
 		return
@@ -34,7 +35,7 @@ func (ctrl *UserController) GetMovies(ctx *gin.Context) {
 		return
 	}
 
-	movies, err := ctrl.Service.ListMovie(limit, page)
+	movies, err := ctrl.Service.ListMovie(limit, page, search)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
