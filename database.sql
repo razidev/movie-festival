@@ -32,7 +32,7 @@ CREATE TABLE `genres` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `genres` (
 
 LOCK TABLES `genres` WRITE;
 /*!40000 ALTER TABLE `genres` DISABLE KEYS */;
-INSERT INTO `genres` VALUES (1,'horror',0,'2024-11-02 14:16:37','2024-11-02 14:16:37'),(2,'superhero',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(3,'action',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(4,'comedy',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(5,'drama',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(6,'sci-fi',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(7,'fantasy',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(8,'thriller',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(9,'romance',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(10,'mystery',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(11,'animation',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(12,'documentary',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(13,'musical',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(14,'adventure',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(15,'crime',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(16,'biography',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(17,'historical',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(18,'western',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(19,'war',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(20,'sports',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(21,'family',0,'2024-11-02 14:19:40','2024-11-02 14:19:40');
+INSERT INTO `genres` VALUES (1,'horror',0,'2024-11-02 14:16:37','2024-11-02 14:16:37'),(2,'superhero',0,'2024-11-02 14:19:40','2024-11-03 22:21:55'),(3,'action',0,'2024-11-02 14:19:40','2024-11-03 22:21:55'),(4,'comedy',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(5,'drama',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(6,'sci-fi',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(7,'fantasy',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(8,'thriller',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(9,'romance',0,'2024-11-02 14:19:40','2024-11-03 22:21:55'),(10,'mystery',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(11,'animation',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(12,'documentary',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(13,'musical',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(14,'adventure',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(15,'crime',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(16,'biography',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(17,'historical',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(18,'western',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(19,'war',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(20,'sports',0,'2024-11-02 14:19:40','2024-11-02 14:19:40'),(21,'family',0,'2024-11-02 14:19:40','2024-11-02 14:19:40');
 /*!40000 ALTER TABLE `genres` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `movies`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `movies` (
-  `id` int unsigned NOT NULL,
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `unique_id` varchar(40) NOT NULL,
   `title` varchar(50) NOT NULL,
   `description` text,
@@ -94,7 +94,7 @@ CREATE TABLE `user_votes` (
   `created_at` timestamp NOT NULL,
   `updated_at` timestamp NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -115,14 +115,14 @@ DROP TABLE IF EXISTS `users`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `unique_id` varchar(40) NOT NULL,
+  `unique_id` varchar(40) NOT NULL DEFAULT 'uuid()',
   `email` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
+  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_id_UNIQUE` (`unique_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -143,4 +143,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-02 21:20:29
+-- Dump completed on 2024-11-04 18:56:43
