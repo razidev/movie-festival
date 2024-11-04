@@ -8,3 +8,8 @@ type PayloadMovie struct {
 	GenreIds    []int16  `json:"genre_ids" validate:"required"`
 	WatchUrl    string   `json:"watch_url" validate:"required,http_url"`
 }
+
+type PayloadUser struct {
+	Email    string `json:"email" validate:"required,min=5,max=20"`
+	Password string `json:"password" validate:"required,min=6,max=20"`
+}

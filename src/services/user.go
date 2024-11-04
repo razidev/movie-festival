@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
+	middleware "github.com/razidev/movie-festival/src/middlewares"
 	"github.com/razidev/movie-festival/src/models"
 	"github.com/razidev/movie-festival/src/repository"
 )
@@ -12,15 +13,19 @@ import (
 type UserService interface {
 	ListMovie(offest int, page int, search string) ([]models.Movies, error)
 	UpdateViewers(unique uuid.UUID) (models.Movies, error)
+	FindByEmail(email string) (models.User, bool)
+	CreateUser(email string, password string) (models.User, error)
 }
 
 type userService struct {
+	userRepository  repository.UserRepository
 	movieRepository repository.MovieRepository
 	genreRepository repository.GenreRepository
 }
 
-func NewUserService(movieRepo repository.MovieRepository, genreRepo repository.GenreRepository) UserService {
+func NewUserService(userRepo repository.UserRepository, movieRepo repository.MovieRepository, genreRepo repository.GenreRepository) UserService {
 	return &userService{
+		userRepository:  userRepo,
 		movieRepository: movieRepo,
 		genreRepository: genreRepo,
 	}
@@ -66,4 +71,30 @@ func (s *userService) UpdateViewers(uniqueID uuid.UUID) (models.Movies, error) {
 	}
 
 	return foundMovie, nil
+}
+
+func (s *userService) FindByEmail(email string) (models.User, bool) {
+	user, err := s.userRepository.FindByEmail(email)
+	if err != nil {
+		return user, false
+	}
+
+	return user, true
+}
+
+func (s *userService) CreateUser(email string, password string) (models.User, error) {
+	var user models.User
+
+	hashedPass, err := middleware.HashPassword(password)
+	if err != nil {
+		return user, errors.New("Failed to hash password")
+	}
+	user.Email = email
+	user.Password = hashedPass
+
+	newUser, err := s.userRepository.CreateUser(user)
+	if err != nil {
+		return user, errors.New("Failed to create user")
+	}
+	return newUser, nil
 }

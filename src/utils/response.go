@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/razidev/movie-festival/src/models"
 	"gorm.io/datatypes"
@@ -39,4 +41,20 @@ func MoviesResponse(movies []models.Movies) []Movie {
 	}
 
 	return responses
+}
+
+type User struct {
+	UniqueId  uuid.UUID `json:"unique_id"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+func UserResponse(user models.User) User {
+	return User{
+		UniqueId:  user.UniqueID,
+		Email:     user.Email,
+		Password:  user.Password,
+		CreatedAt: user.CreatedAt,
+	}
 }
