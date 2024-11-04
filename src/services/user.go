@@ -15,6 +15,7 @@ type UserService interface {
 	UpdateViewers(unique uuid.UUID) (models.Movies, error)
 	FindByEmail(email string) (models.User, bool)
 	CreateUser(email string, password string) (models.User, error)
+	LoginUser(email string, password string) (string, error)
 }
 
 type userService struct {
@@ -97,4 +98,22 @@ func (s *userService) CreateUser(email string, password string) (models.User, er
 		return user, errors.New("Failed to create user")
 	}
 	return newUser, nil
+}
+
+func (s *userService) LoginUser(email string, password string) (string, error) {
+	user, err := s.userRepository.FindByEmail(email)
+	if err != nil {
+		return "", errors.New("User not found")
+	}
+
+	if !middleware.CheckPasswordHash(password, user.Password) {
+		return "", errors.New("Invalid username or password")
+	}
+
+	token, err := middleware.GenerateJWT(user.Email, user.UniqueID)
+	if err != nil {
+		return "", errors.New("failed to generate token")
+	}
+
+	return token, nil
 }

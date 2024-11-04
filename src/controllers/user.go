@@ -100,3 +100,36 @@ func (ctrl *UserController) PostCreateUser(ctx *gin.Context) {
 		},
 	})
 }
+
+func (ctrl *UserController) PostLoginUser(ctx *gin.Context) {
+	var payload utils.PayloadUser
+	if err := ctx.ShouldBindJSON(&payload); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid format request"})
+		return
+	}
+
+	if err := ctrl.Validate.Struct(payload); err != nil {
+		errorsMap := exception.ValidationError(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": errorsMap})
+		return
+	}
+
+	_, isExist := ctrl.Service.FindByEmail(payload.Email)
+	if !isExist {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "Invalid username or password"})
+		return
+	}
+
+	token, err := ctrl.Service.LoginUser(payload.Email, payload.Password)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "User login successfully",
+		"data": gin.H{
+			"token": token,
+		},
+	})
+}
