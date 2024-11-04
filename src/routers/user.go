@@ -10,8 +10,10 @@ import (
 
 func UserRoute(group *gin.RouterGroup, validator *validator.Validate) {
 	movieRepo := repository.NewMovieRepository()
-	userService := services.NewUserService(movieRepo)
+	genreRepo := repository.NewGenreRepository()
+	userService := services.NewUserService(movieRepo, genreRepo)
 	userController := controllers.NewUserController(userService, validator)
 
 	group.GET("/movies", userController.GetMovies)
+	group.PUT("/movies/:uniqueId", userController.PutWatchMovie)
 }

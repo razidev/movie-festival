@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	validator "github.com/go-playground/validator/v10"
+	"github.com/google/uuid"
 	"github.com/razidev/movie-festival/src/services"
 	"github.com/razidev/movie-festival/src/utils"
 )
@@ -44,6 +45,23 @@ func (ctrl *UserController) GetMovies(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": gin.H{
 			"movies": utils.MoviesResponse(movies),
+		},
+	})
+}
+
+func (ctrl *UserController) PutWatchMovie(ctx *gin.Context) {
+	uniqueId := ctx.Param("uniqueId")
+
+	movie, err := ctrl.Service.UpdateViewers(uuid.MustParse(uniqueId))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Watching movies...",
+		"data": gin.H{
+			"movie": utils.MovieResponse(movie),
 		},
 	})
 }
