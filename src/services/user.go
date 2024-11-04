@@ -16,19 +16,22 @@ type UserService interface {
 	FindByEmail(email string) (models.User, bool)
 	CreateUser(email string, password string) (models.User, error)
 	LoginUser(email string, password string) (string, error)
+	VoteMovie(movieUniueId uuid.UUID, userUniqueId uuid.UUID) error
 }
 
 type userService struct {
-	userRepository  repository.UserRepository
-	movieRepository repository.MovieRepository
-	genreRepository repository.GenreRepository
+	userRepository     repository.UserRepository
+	movieRepository    repository.MovieRepository
+	genreRepository    repository.GenreRepository
+	userVoteRepository repository.UserVoteRepository
 }
 
-func NewUserService(userRepo repository.UserRepository, movieRepo repository.MovieRepository, genreRepo repository.GenreRepository) UserService {
+func NewUserService(userRepo repository.UserRepository, movieRepo repository.MovieRepository, genreRepo repository.GenreRepository, userVoteRepo repository.UserVoteRepository) UserService {
 	return &userService{
-		userRepository:  userRepo,
-		movieRepository: movieRepo,
-		genreRepository: genreRepo,
+		userRepository:     userRepo,
+		movieRepository:    movieRepo,
+		genreRepository:    genreRepo,
+		userVoteRepository: userVoteRepo,
 	}
 }
 
@@ -116,4 +119,24 @@ func (s *userService) LoginUser(email string, password string) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (s *userService) VoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUID) error {
+	_, err := s.userVoteRepository.FindCurrentVote(movieUniqueId, userUniqueId)
+	if err == nil {
+		return errors.New("User has already voted for this movie")
+	}
+
+	newVote := models.UserVotes{
+		MovieUniqueID: movieUniqueId,
+		UserUniqueID:  userUniqueId,
+		Status:        "voted",
+	}
+
+	err = s.userVoteRepository.CreateVote(newVote)
+	if err != nil {
+		return errors.New("Failed to create user vote")
+	}
+
+	return nil
 }
