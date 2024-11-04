@@ -176,3 +176,16 @@ func (ctrl *UserController) PutUnVotesMovie(ctx *gin.Context) {
 		"message": "Unvote Movie successfully",
 	})
 }
+
+func (ctrl *UserController) GetUserVotes(ctx *gin.Context) {
+	users, err := ctrl.Service.ListUserVotes()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Users vote movies",
+		"data":    utils.UserVotedResponse(users),
+	})
+}

@@ -10,6 +10,7 @@ type UserVoteRepository interface {
 	FindCurrentVote(movieUniueId uuid.UUID, userUniqueId uuid.UUID) (models.UserVotes, error)
 	CreateVote(vote models.UserVotes) error
 	UpdateVote(id uint, status string) error
+	ListVotes() ([]models.UserVotes, error)
 }
 
 type userVoteRepository struct{}
@@ -41,4 +42,13 @@ func (r *userVoteRepository) UpdateVote(id uint, status string) error {
 	}
 
 	return nil
+}
+
+func (r *userVoteRepository) ListVotes() ([]models.UserVotes, error) {
+	var votes []models.UserVotes
+	if err := configs.DB.Where("status = 'voted'").Find(&votes).Error; err != nil {
+		return votes, err
+	}
+
+	return votes, nil
 }

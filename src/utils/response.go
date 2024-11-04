@@ -58,3 +58,13 @@ func UserResponse(user models.User) User {
 		CreatedAt: user.CreatedAt,
 	}
 }
+
+func UserVotedResponse(users []models.User) []string {
+	var responses []string
+
+	for _, user := range users {
+		responses = append(responses, user.Email)
+	}
+
+	return responses
+}

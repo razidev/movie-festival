@@ -19,6 +19,7 @@ type UserService interface {
 	LoginUser(email string, password string) (string, error)
 	VoteMovie(movieUniueId uuid.UUID, userUniqueId uuid.UUID) error
 	UnVoteMovie(movieUniueId uuid.UUID, userUniqueId uuid.UUID) error
+	ListUserVotes() ([]models.User, error)
 }
 
 type userService struct {
@@ -182,4 +183,23 @@ func (s *userService) UnVoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUI
 	}
 
 	return nil
+}
+
+func (s *userService) ListUserVotes() ([]models.User, error) {
+	votes, err := s.userVoteRepository.ListVotes()
+	if err != nil {
+		return nil, errors.New("User Votes not found")
+	}
+
+	var uuids uuid.UUIDs
+	for _, vote := range votes {
+		uuids = append(uuids, vote.UserUniqueID)
+	}
+
+	users, err := s.userRepository.ListUser(uuids)
+	if err != nil {
+		return nil, errors.New("Users not found")
+	}
+
+	return users, nil
 }

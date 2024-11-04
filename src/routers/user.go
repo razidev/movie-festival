@@ -20,6 +20,7 @@ func UserRoute(group *gin.RouterGroup, validator *validator.Validate) {
 
 	group.GET("/movies", userController.GetMovies)
 	group.PUT("/movies/:uniqueId", userController.PutWatchMovie)
+	group.GET("/votes", userController.GetUserVotes)
 	group.POST("/register", userController.PostCreateUser)
 	group.POST("/login", userController.PostLoginUser)
 
