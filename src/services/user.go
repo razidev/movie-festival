@@ -3,6 +3,7 @@ package services
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 	middleware "github.com/razidev/movie-festival/src/middlewares"
@@ -17,6 +18,7 @@ type UserService interface {
 	CreateUser(email string, password string) (models.User, error)
 	LoginUser(email string, password string) (string, error)
 	VoteMovie(movieUniueId uuid.UUID, userUniqueId uuid.UUID) error
+	UnVoteMovie(movieUniueId uuid.UUID, userUniqueId uuid.UUID) error
 }
 
 type userService struct {
@@ -147,6 +149,36 @@ func (s *userService) VoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUID)
 	err = s.userVoteRepository.CreateVote(newVote)
 	if err != nil {
 		return errors.New("Failed to create user vote")
+	}
+
+	return nil
+}
+
+func (s *userService) UnVoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUID) error {
+	vote, err := s.userVoteRepository.FindCurrentVote(movieUniqueId, userUniqueId)
+	fmt.Println("vote", vote)
+	if err != nil {
+		return errors.New("User Vote not found")
+	}
+
+	if vote.Status == "unvoted" {
+		return errors.New("User has not voted for this movie")
+	}
+
+	foundMovie, err := s.movieRepository.GetMovieByUniqueId(movieUniqueId)
+	if err != nil {
+		return errors.New("Movie not found")
+	}
+
+	foundMovie.Voters--
+	_, err = s.movieRepository.UpdateMovie(foundMovie)
+	if err != nil {
+		return errors.New("failed to update movie")
+	}
+
+	err = s.userVoteRepository.UpdateVote(vote.ID, "unvoted")
+	if err != nil {
+		return errors.New("Failed to unvote movie")
 	}
 
 	return nil

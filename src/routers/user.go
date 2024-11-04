@@ -25,4 +25,5 @@ func UserRoute(group *gin.RouterGroup, validator *validator.Validate) {
 
 	group.Use(middleware.JWTAuthMiddleware())
 	group.PUT("/movies/votes/:uniqueId", userController.PutVotesMovie)
+	group.PUT("/movies/unvotes/:uniqueId", userController.PutUnVotesMovie)
 }

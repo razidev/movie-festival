@@ -9,6 +9,7 @@ import (
 type UserVoteRepository interface {
 	FindCurrentVote(movieUniueId uuid.UUID, userUniqueId uuid.UUID) (models.UserVotes, error)
 	CreateVote(vote models.UserVotes) error
+	UpdateVote(id uint, status string) error
 }
 
 type userVoteRepository struct{}
@@ -28,6 +29,14 @@ func (r *userVoteRepository) FindCurrentVote(movieUniqueId uuid.UUID, userUnique
 
 func (r *userVoteRepository) CreateVote(vote models.UserVotes) error {
 	if err := configs.DB.Create(&vote).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *userVoteRepository) UpdateVote(id uint, status string) error {
+	if err := configs.DB.Model(&models.UserVotes{}).Where("id = ?", id).Update("status", status).Error; err != nil {
 		return err
 	}
 

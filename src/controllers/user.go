@@ -155,3 +155,24 @@ func (ctrl *UserController) PutVotesMovie(ctx *gin.Context) {
 		"message": "Vote Movie successfully",
 	})
 }
+
+func (ctrl *UserController) PutUnVotesMovie(ctx *gin.Context) {
+	movieUniqueId := ctx.Param("uniqueId")
+	claims, exists := ctx.Get("unique_id")
+	if !exists {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "User unauthorized"})
+		return
+	}
+	claimsJSON, _ := json.Marshal(claims)
+	userUniqueId := string(claimsJSON)
+
+	err := ctrl.Service.UnVoteMovie(uuid.MustParse(movieUniqueId), uuid.MustParse(userUniqueId))
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Unvote Movie successfully",
+	})
+}
