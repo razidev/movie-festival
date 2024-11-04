@@ -17,7 +17,7 @@ func NewUserVoteRepository() UserVoteRepository {
 	return &userVoteRepository{}
 }
 
-func (ur *userVoteRepository) FindCurrentVote(movieUniqueId uuid.UUID, userUniqueId uuid.UUID) (models.UserVotes, error) {
+func (r *userVoteRepository) FindCurrentVote(movieUniqueId uuid.UUID, userUniqueId uuid.UUID) (models.UserVotes, error) {
 	var vote models.UserVotes
 	if err := configs.DB.Where("movie_unique_id =? AND user_unique_id =?", movieUniqueId, userUniqueId).First(&vote).Error; err != nil {
 		return vote, err
@@ -26,7 +26,7 @@ func (ur *userVoteRepository) FindCurrentVote(movieUniqueId uuid.UUID, userUniqu
 	return vote, nil
 }
 
-func (ur *userVoteRepository) CreateVote(vote models.UserVotes) error {
+func (r *userVoteRepository) CreateVote(vote models.UserVotes) error {
 	if err := configs.DB.Create(&vote).Error; err != nil {
 		return err
 	}
