@@ -122,7 +122,18 @@ func (s *userService) LoginUser(email string, password string) (string, error) {
 }
 
 func (s *userService) VoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUID) error {
-	_, err := s.userVoteRepository.FindCurrentVote(movieUniqueId, userUniqueId)
+	foundMovie, err := s.movieRepository.GetMovieByUniqueId(movieUniqueId)
+	if err != nil {
+		return errors.New("Movie not found")
+	}
+
+	foundMovie.Voters++
+	_, err = s.movieRepository.UpdateMovie(foundMovie)
+	if err != nil {
+		return errors.New("failed to update movie")
+	}
+
+	_, err = s.userVoteRepository.FindCurrentVote(movieUniqueId, userUniqueId)
 	if err == nil {
 		return errors.New("User has already voted for this movie")
 	}
