@@ -11,14 +11,19 @@ type MovieService interface {
 	CreateMovie(movie models.Movies) (models.Movies, error)
 	UpdateMovie(movie models.Movies) (models.Movies, error)
 	FindHighestVotes() (models.Movies, error)
+	FindHighestViewers() (map[string]interface{}, error)
 }
 
 type movieService struct {
 	movieRepository repository.MovieRepository
+	genreRepository repository.GenreRepository
 }
 
-func NewMovieService(repo repository.MovieRepository) MovieService {
-	return &movieService{movieRepository: repo}
+func NewMovieService(movieRepo repository.MovieRepository, genreRepo repository.GenreRepository) MovieService {
+	return &movieService{
+		movieRepository: movieRepo,
+		genreRepository: genreRepo,
+	}
 }
 
 func (s *movieService) CreateMovie(movie models.Movies) (models.Movies, error) {
@@ -58,4 +63,30 @@ func (s *movieService) FindHighestVotes() (models.Movies, error) {
 	}
 
 	return movie, nil
+}
+
+func (s *movieService) FindHighestViewers() (map[string]interface{}, error) {
+	movie, err := s.movieRepository.HighestScore("viewers")
+	if err != nil {
+		return nil, err
+	}
+
+	genre, err := s.genreRepository.HighestViewer()
+	if err != nil {
+		return nil, err
+	}
+
+	return map[string]interface{}{
+		"Movie": map[string]interface{}{
+			"title":     movie.Title,
+			"duration":  movie.Duration,
+			"artists":   movie.Artists,
+			"watch_url": movie.WatchUrl,
+			"viewers":   movie.Viewers,
+		},
+		"Genre": map[string]interface{}{
+			"name":    genre.Name,
+			"viewers": genre.Viewers,
+		},
+	}, nil
 }

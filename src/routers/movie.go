@@ -10,10 +10,12 @@ import (
 
 func movieRoute(group *gin.RouterGroup, validator *validator.Validate) {
 	movieRepo := repository.NewMovieRepository()
-	movieService := services.NewMovieService(movieRepo)
+	genreRepo := repository.NewGenreRepository()
+	movieService := services.NewMovieService(movieRepo, genreRepo)
 	movieController := controllers.NewMoviesController(movieService, validator)
 
 	group.POST("/", movieController.PostMovie)
 	group.PUT("/:uniqueId", movieController.PutMovie)
 	group.GET("/highest-vote", movieController.GetHighestVotes)
+	group.GET("/highest-view", movieController.GetHighestViewers)
 }

@@ -120,3 +120,15 @@ func (ctrl *MoviesController) GetHighestVotes(ctx *gin.Context) {
 		},
 	})
 }
+
+func (ctrl *MoviesController) GetHighestViewers(ctx *gin.Context) {
+	highestViewers, _ := ctrl.Service.FindHighestViewers()
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "Top 1 highest viewers movies",
+		"data": gin.H{
+			"movie": highestViewers["Movie"],
+			"genre": highestViewers["Genre"],
+		},
+	})
+}

@@ -8,6 +8,7 @@ import (
 type GenreRepository interface {
 	ListGenres(search []uint) ([]models.Genres, error)
 	UpdateViewers(ids []uint, genres []models.Genres) error
+	HighestViewer() (models.Genres, error)
 }
 
 type genreRepository struct{}
@@ -33,4 +34,13 @@ func (r *genreRepository) UpdateViewers(ids []uint, genres []models.Genres) erro
 	}
 
 	return nil
+}
+
+func (r *genreRepository) HighestViewer() (models.Genres, error) {
+	var genre models.Genres
+	if err := configs.DB.Order("viewers DESC").First(&genre).Error; err != nil {
+		return genre, err
+	}
+
+	return genre, nil
 }
