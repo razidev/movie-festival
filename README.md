@@ -42,6 +42,11 @@ This API is responsible for get the highest vote movie based on user's vote coun
 This API is responsible for get the highest view movie based on user's view count
 ```
 
+5. GET /movie/genres
+```javascript
+This API is responsible for get available genres, to put the id value into the POST /movie or PUT /movie
+```
+
 ### For User
 In this APIs, the user have authenticated and non authenticated API requests. The user can see the list of movies, watch movies, list user vote movies, Register, Login, Vote movies, and Unvote movies
 
