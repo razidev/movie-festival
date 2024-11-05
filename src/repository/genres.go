@@ -6,6 +6,7 @@ import (
 )
 
 type GenreRepository interface {
+	AllGenres() ([]models.Genres, error)
 	ListGenres(search []uint) ([]models.Genres, error)
 	UpdateViewers(ids []uint, genres []models.Genres) error
 	HighestViewer() (models.Genres, error)
@@ -15,6 +16,16 @@ type genreRepository struct{}
 
 func NewGenreRepository() GenreRepository {
 	return &genreRepository{}
+}
+
+func (r *genreRepository) AllGenres() ([]models.Genres, error) {
+	var genres []models.Genres
+
+	if err := configs.DB.Find(&genres).Error; err != nil {
+		return nil, err
+	}
+
+	return genres, nil
 }
 
 func (r *genreRepository) ListGenres(ids []uint) ([]models.Genres, error) {

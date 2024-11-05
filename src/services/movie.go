@@ -12,6 +12,7 @@ type MovieService interface {
 	UpdateMovie(movie models.Movies) (models.Movies, error)
 	FindHighestVotes() (models.Movies, error)
 	FindHighestViewers() (map[string]interface{}, error)
+	ListGenres() ([]models.Genres, error)
 }
 
 type movieService struct {
@@ -89,4 +90,13 @@ func (s *movieService) FindHighestViewers() (map[string]interface{}, error) {
 			"viewers": genre.Viewers,
 		},
 	}, nil
+}
+
+func (s *movieService) ListGenres() ([]models.Genres, error) {
+	genres, err := s.genreRepository.AllGenres()
+	if err != nil {
+		return genres, errors.New("Failed to list genres")
+	}
+
+	return genres, nil
 }

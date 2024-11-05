@@ -132,3 +132,16 @@ func (ctrl *MoviesController) GetHighestViewers(ctx *gin.Context) {
 		},
 	})
 }
+
+func (ctrl *MoviesController) GetMovieGenres(ctx *gin.Context) {
+	genres, err := ctrl.Service.ListGenres()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"message": "List of genres",
+		"data":    utils.ListGenresResponse(genres),
+	})
+}

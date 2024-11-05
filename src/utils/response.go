@@ -68,3 +68,21 @@ func UserVotedResponse(users []models.User) []string {
 
 	return responses
 }
+
+type Genres struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+func ListGenresResponse(genres []models.Genres) (restructure []Genres) {
+	for _, genre := range genres {
+		genre := Genres{
+			ID:   genre.ID,
+			Name: genre.Name,
+		}
+
+		restructure = append(restructure, genre)
+	}
+
+	return restructure
+}

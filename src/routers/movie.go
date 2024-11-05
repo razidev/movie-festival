@@ -18,4 +18,5 @@ func movieRoute(group *gin.RouterGroup, validator *validator.Validate) {
 	group.PUT("/:uniqueId", movieController.PutMovie)
 	group.GET("/highest-vote", movieController.GetHighestVotes)
 	group.GET("/highest-view", movieController.GetHighestViewers)
+	group.GET("/genres", movieController.GetMovieGenres)
 }
