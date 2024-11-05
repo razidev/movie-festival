@@ -111,6 +111,26 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "List Genres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/movie/genres",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"movie",
+								"genres"
+							]
+						}
+					},
+					"response": []
 				}
 			],
 			"description": "API Post Movie: for admin to create a movie\n\nAPI Put Movie: for admin to update existing movie\n\nAPI Get Highest Vote: for admin to get highest vote movie\n\nAPI Get Highest View: for admin to get highest view by movie and by genre"
