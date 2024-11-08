@@ -94,7 +94,7 @@ func (ctrl *MoviesController) PutMovie(ctx *gin.Context) {
 
 	updatedMovie, err := ctrl.Service.UpdateMovie(movie)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -109,7 +109,7 @@ func (ctrl *MoviesController) PutMovie(ctx *gin.Context) {
 func (ctrl *MoviesController) GetHighestVotes(ctx *gin.Context) {
 	highestVotesMovie, err := ctrl.Service.FindHighestVotes()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 

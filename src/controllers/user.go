@@ -30,17 +30,17 @@ func (ctrl *UserController) GetMovies(ctx *gin.Context) {
 	limit, errLimit := strconv.Atoi(ctx.Query("limit"))
 	search := ctx.Query("search")
 	if errPage != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid page number"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid page number"})
 		return
 	}
 	if errLimit != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Invalid limit number"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Invalid limit number"})
 		return
 	}
 
 	movies, err := ctrl.Service.ListMovie(limit, page, search)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -56,7 +56,7 @@ func (ctrl *UserController) PutWatchMovie(ctx *gin.Context) {
 
 	movie, err := ctrl.Service.UpdateViewers(uuid.MustParse(uniqueId))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusNotFound, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -84,7 +84,7 @@ func (ctrl *UserController) PostCreateUser(ctx *gin.Context) {
 
 	_, isExist := ctrl.Service.FindByEmail(payload.Email)
 	if isExist {
-		ctx.JSON(http.StatusConflict, gin.H{"error": "Email already exists"})
+		ctx.JSON(http.StatusConflict, gin.H{"message": "Email already exists"})
 		return
 	}
 
@@ -117,13 +117,13 @@ func (ctrl *UserController) PostLoginUser(ctx *gin.Context) {
 
 	_, isExist := ctrl.Service.FindByEmail(payload.Email)
 	if !isExist {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": "Invalid username or password"})
+		ctx.JSON(http.StatusNotFound, gin.H{"message": "Invalid username or password"})
 		return
 	}
 
 	token, err := ctrl.Service.LoginUser(payload.Email, payload.Password)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -139,7 +139,7 @@ func (ctrl *UserController) PutVotesMovie(ctx *gin.Context) {
 	movieUniqueId := ctx.Param("uniqueId")
 	claims, exists := ctx.Get("unique_id")
 	if !exists {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "User unauthorized"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "User unauthorized"})
 		return
 	}
 	claimsJSON, _ := json.Marshal(claims)
@@ -147,7 +147,7 @@ func (ctrl *UserController) PutVotesMovie(ctx *gin.Context) {
 
 	err := ctrl.Service.VoteMovie(uuid.MustParse(movieUniqueId), uuid.MustParse(userUniqueId))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -160,7 +160,7 @@ func (ctrl *UserController) PutUnVotesMovie(ctx *gin.Context) {
 	movieUniqueId := ctx.Param("uniqueId")
 	claims, exists := ctx.Get("unique_id")
 	if !exists {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "User unauthorized"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "User unauthorized"})
 		return
 	}
 	claimsJSON, _ := json.Marshal(claims)
@@ -168,7 +168,7 @@ func (ctrl *UserController) PutUnVotesMovie(ctx *gin.Context) {
 
 	err := ctrl.Service.UnVoteMovie(uuid.MustParse(movieUniqueId), uuid.MustParse(userUniqueId))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -180,7 +180,7 @@ func (ctrl *UserController) PutUnVotesMovie(ctx *gin.Context) {
 func (ctrl *UserController) GetUserVotes(ctx *gin.Context) {
 	users, err := ctrl.Service.ListUserVotes()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
 		return
 	}
 

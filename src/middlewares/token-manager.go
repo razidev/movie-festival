@@ -45,21 +45,21 @@ func ParseJWT(c *gin.Context) (*Claims, bool) {
 
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token signature"})
+			c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid token signature"})
 			return nil, false
 		}
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to parse token"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized access"})
 		return nil, false
 	}
 
 	if !token.Valid {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized access"})
 		return nil, false
 	}
 
 	// Check if the token has expired
 	if claims.ExpiresAt < time.Now().Unix() {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token has expired"})
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Session has expired"})
 		return nil, false
 	}
 
