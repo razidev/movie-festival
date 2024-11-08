@@ -147,7 +147,7 @@ func (ctrl *UserController) PutVotesMovie(ctx *gin.Context) {
 
 	err := ctrl.Service.VoteMovie(uuid.MustParse(movieUniqueId), uuid.MustParse(userUniqueId))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
@@ -168,7 +168,7 @@ func (ctrl *UserController) PutUnVotesMovie(ctx *gin.Context) {
 
 	err := ctrl.Service.UnVoteMovie(uuid.MustParse(movieUniqueId), uuid.MustParse(userUniqueId))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

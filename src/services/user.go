@@ -3,7 +3,6 @@ package services
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 
 	"github.com/google/uuid"
 	middleware "github.com/razidev/movie-festival/src/middlewares"
@@ -130,15 +129,15 @@ func (s *userService) VoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUID)
 		return errors.New("Movie not found")
 	}
 
+	userVote, err := s.userVoteRepository.FindCurrentVote(movieUniqueId, userUniqueId)
+	if err == nil && userVote.Status == "voted" {
+		return errors.New("User has already voted for this movie")
+	}
+
 	foundMovie.Voters++
 	_, err = s.movieRepository.UpdateMovie(foundMovie)
 	if err != nil {
 		return errors.New("failed to update movie")
-	}
-
-	_, err = s.userVoteRepository.FindCurrentVote(movieUniqueId, userUniqueId)
-	if err == nil {
-		return errors.New("User has already voted for this movie")
 	}
 
 	newVote := models.UserVotes{
@@ -147,7 +146,12 @@ func (s *userService) VoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUID)
 		Status:        "voted",
 	}
 
-	err = s.userVoteRepository.CreateVote(newVote)
+	if userVote.Status == "unvoted" {
+		err = s.userVoteRepository.UpdateVote(userVote.ID, "voted")
+	} else {
+		err = s.userVoteRepository.CreateVote(newVote)
+	}
+
 	if err != nil {
 		return errors.New("Failed to create user vote")
 	}
@@ -157,7 +161,6 @@ func (s *userService) VoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUID)
 
 func (s *userService) UnVoteMovie(movieUniqueId uuid.UUID, userUniqueId uuid.UUID) error {
 	vote, err := s.userVoteRepository.FindCurrentVote(movieUniqueId, userUniqueId)
-	fmt.Println("vote", vote)
 	if err != nil {
 		return errors.New("User Vote not found")
 	}
